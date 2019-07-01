@@ -17,11 +17,11 @@ import tempfile
 # Constants ====================================================================
 
 ANACONDA_PATH = os.environ.get(
-    'WASP_PKG_ANACONDA_PATH',
+    'WASP_MAP_ANACONDA_PATH',
     os.path.join(os.path.dirname(__file__), 'anaconda3/bin/python')
 )
 DIR = os.environ.get(
-    'WASP_PKG_DIR',
+    'WASP_MAP_DIR',
     os.path.join(os.path.dirname(__file__), 'WASP')
 )
 

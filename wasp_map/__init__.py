@@ -33,6 +33,10 @@ def merge_and_rmdup(*sequence_alignments, paired_end=False, processes=1):
         return sa
 """
 
-from wasp_pkg.wasp import (
-    
+from wasp_map.wasp import (
+    ANACONDA_PATH, DIR, RmDup, get_vcf_sample_indices, get_vcf_column_headers,
+    any_heterozygous, is_genotyped_or_well_imputed, generate_filtered_vcf,
+    generate_positions_from_vcf, write_positions_and_filtered_vcfs,
+    get_snps_from_vcfs, write_positions_snps, find_intersecting_snps,
+    filter_remapped_reads
 )
