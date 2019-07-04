@@ -11,19 +11,14 @@ import os.path
 import subprocess
 import tempfile
 
+from wasp_map.env import ANACONDA_DIR, DIR
+
 
 
 
 # Constants ====================================================================
 
-ANACONDA_PATH = os.environ.get(
-    'WASP_MAP_ANACONDA_PATH',
-    os.path.join(os.path.dirname(__file__), 'anaconda3/bin/python')
-)
-DIR = os.environ.get(
-    'WASP_MAP_DIR',
-    os.path.join(os.path.dirname(__file__), 'WASP')
-)
+ANACONDA_PATH = os.path.join(ANACONDA_DIR, 'bin', 'python')
 
 
 
