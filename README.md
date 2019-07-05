@@ -1,4 +1,4 @@
-# wasp_pkg
+# wasp_map
 Utilites for the mapping pipeline from WASP
 
 ## Installation
