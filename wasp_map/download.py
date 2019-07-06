@@ -74,6 +74,14 @@ def configure_anaconda():
     subprocess.run((CONDA_PATH, 'install', 'pysam'))
 
 
+def clone_wasp():
+    print(
+        'cloning the WASP github repo to '
+        f"{os.path.join(os.path.dirname(DIR), 'WASP')}"
+    )
+    Git(os.path.dirname(DIR)).clone(WASP_GITHUB_REPO)
+
+
 def parse_arguments():
     parser = ArgumentParser(description='download and install WASP')
     parser.add_argument(
@@ -84,22 +92,14 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def clone_wasp():
-    print(
-        'cloning the WASP github repo to '
-        f"{os.path.join(os.path.dirname(DIR), 'WASP')}"
-    )
-    Git(os.path.dirname(DIR)).clone(WASP_GITHUB_REPO)
-
-
 def main():
     args = parse_arguments()
     if os.path.isdir(ANACONDA_DIR):
         use_existing_dir = input(
             f'There is already a directory at {ANACONDA_DIR} - is this the '
-            'anaconda you wish to use? (Y/n) >>>'
+            'anaconda you wish to use? ([y]/n) >>>'
         )
-        if use_existing_dir not in {'', 'y', 'Y'}:
+        if use_existing_dir.casefold() not in {'', 'y', 'yes'}:
             print(
                 'Please change the value of environment variable '
                 'WASP_MAP_ANACONDA_DIR or remove the existing directory at '
@@ -109,9 +109,9 @@ def main():
     if os.path.isdir(DIR):
         use_existing_dir = input(
             f'There is already a directory at {DIR} - is this the '
-            'WASP you wish to use? (Y/n) >>>'
+            'WASP you wish to use? ([y]/n) >>>'
         )
-        if use_existing_dir not in {'', 'y', 'Y'}:
+        if use_existing_dir.casefold() not in {'', 'y', 'yes'}:
             print(
                 'Please change the value of environment variable WASP_MAP_DIR '
                 'or remove the existing directory at that location'
