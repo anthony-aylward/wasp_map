@@ -18,8 +18,12 @@ from wasp_map.env import ANACONDA_DIR
 
 def main():
     command = (
-        'export',
-        f"LD_LIBRARY_PATH={os.path.join(ANACONDA_DIR, 'lib')}:$LD_LIBRARY_PATH"
+        'sh', '-c',
+        (
+            'export '
+            'LD_LIBRARY_PATH='
+            f"{os.path.join(ANACONDA_DIR, 'lib')}:$LD_LIBRARY_PATH"
+        )
     )
     run(command)
     print(
