@@ -18,7 +18,8 @@ Anaconda3 and WASP, respectively, then you can skip step 2 (running
 
 If you also set environment variable `LD_LIBRARY_PATH` appropriately, you can
 skip step 3 (running `wasp_map-set-ldlib`). For example:
-```
+
+```sh
 export WASP_MAP_ANACONDA_DIR=~/anaconda3
 export WASP_MAP_DIR=~/WASP
 export LD_LIBRARY_PATH=${WASP_MAP_ANACONDA_DIR}/lib:$LD_LIBRARY_PATH
