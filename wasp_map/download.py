@@ -49,7 +49,9 @@ def download_anaconda_install_script(anaconda_install_script_path, quiet=False):
         copyfileobj(response, f)
 
 
-def check_hash(anaconda_install_script_path):
+def check_hash(anaconda_install_script_path, quiet=False):
+    if not quiet:
+        print(f'checking hash of {anaconda_install_script_path}')
     with open(anaconda_install_script_path, 'rb') as f:
         if sha256(f.read()).hexdigest() != ANACONDA_HASH:
             raise RuntimeError(f'hash check failed for {ANACONDA_URL}')
@@ -93,12 +95,12 @@ def main():
             anaconda_install_script_path,
             quiet=args.quiet
         )
-        check_hash(anaconda_install_script_path)
+        check_hash(anaconda_install_script_path, quiet=args.quiet)
+        if not args.quiet:
+            print(f'installing anaconda3 into {ANACONDA_DIR}')
         with subprocess.Popen(
             'bash',
             anaconda_install_script_path,
             stdin=subprocess.PIPE
         ) as anaconda_installer:
-            anaconda_installer.communicate(
-                bytes(f'\nqyes\n{ANACONDA_DIR}\n')
-            )
+            anaconda_installer.communicate(f'\nqyes\n{ANACONDA_DIR}\n'.encode())
