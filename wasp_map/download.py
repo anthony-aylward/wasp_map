@@ -46,8 +46,19 @@ def parse_arguments():
 
 def main():
     args = parse_arguments()
-    if os.path.exists(ANACONDA_DIR):
-        raise RuntimeError(f'There is already a file at {ANACONDA_DIR}')
+    if os.path.isdir(ANACONDA_DIR):
+        use_existing_dir = input(
+            f'There is already a directory at {ANACONDA_DIR} - is this the '
+            'anaconda you wish to use? (Y/n)'
+        )
+        if use_existing_dir not in {'', 'y', 'Y'}:
+            print(
+                'Please change the value of environment variable '
+                'WASP_MAP_ANACONDA_DIR'
+            )
+            return
+    elif os.path.exists(ANACONDA_DIR):
+        raise RuntimeError(f'There is a non-directory file at {ANACONDA_DIR}')
     with TemporaryDirectory(dir=args.tmp_dir) as temp_dir:
         anaconda_install_script_path = os.path.join(
             temp_dir, 'Anaconda3-2019.03-Linux-x86_64.sh'
