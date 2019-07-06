@@ -96,10 +96,9 @@ def main():
             quiet=args.quiet
         )
         check_hash(anaconda_install_script_path, quiet=args.quiet)
-        if not args.quiet:
-            print(
-                'installing Anaconda3. When prompted, specify the following '
-                f'install location:\n{ANACONDA_DIR}\n\npress ENTER to '
-                'continue >>>'
-            )
+        input(
+            'installing Anaconda3. When prompted, specify the following '
+            f'install location:\n{ANACONDA_DIR}\n\npress ENTER to '
+            'continue >>>'
+        )
         subprocess.run(('bash', anaconda_install_script_path))
