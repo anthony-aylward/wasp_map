@@ -138,14 +138,14 @@ def main():
         )
     else:
         use_existing_wasp_dir = False
-    
-    with TemporaryDirectory(dir=args.tmp_dir) as temp_dir:
-        anaconda_install_script_path = os.path.join(
-            temp_dir, 'Anaconda3-2019.03-Linux-x86_64.sh'
-        )
-        download_anaconda_install_script(anaconda_install_script_path)
-        check_hash(anaconda_install_script_path)
-        install_anaconda(anaconda_install_script_path)
-    configure_anaconda()
+    if not use_existing_anaconda_dir:
+        with TemporaryDirectory(dir=args.tmp_dir) as temp_dir:
+            anaconda_install_script_path = os.path.join(
+                temp_dir, 'Anaconda3-2019.03-Linux-x86_64.sh'
+            )
+            download_anaconda_install_script(anaconda_install_script_path)
+            check_hash(anaconda_install_script_path)
+            install_anaconda(anaconda_install_script_path)
+        configure_anaconda()
     if not use_existing_wasp_dir:
         clone_wasp()
