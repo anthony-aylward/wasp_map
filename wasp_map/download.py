@@ -9,6 +9,7 @@ import os.path
 import subprocess
 
 from argparse import ArgumentParser
+from git import Git
 from hashlib import sha256
 from shutil import copyfileobj
 from tempfile import TemporaryDirectory
@@ -30,6 +31,7 @@ ANACONDA_HASH = os.environ.get(
     '45c851b7497cc14d5ca060064394569f724b67d9b5f98a926ed49b834a6bb73a'
 )
 CONDA_PATH = os.path.join(ANACONDA_DIR, 'bin', 'conda')
+WASP_GITHUB_REPO = 'https://github.com/bmvdgeijn/WASP.git'
 
 
 
@@ -66,6 +68,7 @@ def install_anaconda(anaconda_install_script_path):
 
 
 def configure_anaconda():
+    print('configuring Anaconda3')
     subprocess.run(CONDA_PATH, 'config', '--add', 'channels', 'r')
     subprocess.run(CONDA_PATH, 'config', '--add', 'channels', 'bioconda')
     subprocess.run(CONDA_PATH, 'install', 'pysam')
@@ -79,6 +82,14 @@ def parse_arguments():
         help='directory to use for temporary files'
     )
     return parser.parse_args()
+
+
+def clone_wasp():
+    print(
+        'cloning the WASP github repo to '
+        f"{os.path.join(os.path.dirname(DIR), 'WASP')}"
+    )
+    Git(os.path.dirname(DIR)).clone(WASP_GITHUB_REPO)
 
 
 def main():
@@ -104,3 +115,4 @@ def main():
         check_hash(anaconda_install_script_path)
         install_anaconda(anaconda_install_script_path)
     configure_anaconda()
+    clone_wasp()
