@@ -4,7 +4,6 @@
 
 # Imports ======================================================================
 
-import os
 import os.path
 
 from subprocess import run
