@@ -69,9 +69,9 @@ def install_anaconda(anaconda_install_script_path):
 
 def configure_anaconda():
     print('configuring Anaconda3')
-    subprocess.run(CONDA_PATH, 'config', '--add', 'channels', 'r')
-    subprocess.run(CONDA_PATH, 'config', '--add', 'channels', 'bioconda')
-    subprocess.run(CONDA_PATH, 'install', 'pysam')
+    subprocess.run((CONDA_PATH, 'config', '--add', 'channels', 'r'))
+    subprocess.run((CONDA_PATH, 'config', '--add', 'channels', 'bioconda'))
+    subprocess.run((CONDA_PATH, 'install', 'pysam'))
 
 
 def parse_arguments():
@@ -102,7 +102,19 @@ def main():
         if use_existing_dir not in {'', 'y', 'Y'}:
             print(
                 'Please change the value of environment variable '
-                'WASP_MAP_ANACONDA_DIR'
+                'WASP_MAP_ANACONDA_DIR or remove the existing directory at '
+                'that location'
+            )
+            return
+    if os.path.isdir(DIR):
+        use_existing_dir = input(
+            f'There is already a directory at {DIR} - is this the '
+            'WASP you wish to use? (Y/n) >>>'
+        )
+        if use_existing_dir not in {'', 'y', 'Y'}:
+            print(
+                'Please change the value of environment variable WASP_MAP_DIR '
+                'or remove the existing directory at that location'
             )
             return
     elif os.path.exists(ANACONDA_DIR):
