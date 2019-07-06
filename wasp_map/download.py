@@ -102,4 +102,4 @@ def main():
             ('bash', anaconda_install_script_path),
             stdin=subprocess.PIPE
         ) as anaconda_installer:
-            anaconda_installer.communicate(f'\nqyes\n{ANACONDA_DIR}\n'.encode())
+            anaconda_installer.communicate('yes'.encode())
