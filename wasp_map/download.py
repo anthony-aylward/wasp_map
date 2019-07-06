@@ -95,30 +95,50 @@ def parse_arguments():
 def main():
     args = parse_arguments()
     if os.path.isdir(ANACONDA_DIR):
-        use_existing_dir = input(
-            f'There is already a directory at {ANACONDA_DIR} - is this the '
-            'anaconda you wish to use? ([y]/n) >>>'
+        use_existing_anaconda_dir = (
+            input(
+                f'There is already a directory at {ANACONDA_DIR} - is this the '
+                'anaconda you wish to use? ([y]/n) >>>'
+            ).casefold()
+            in {'', 'y', 'yes'}
         )
-        if use_existing_dir.casefold() not in {'', 'y', 'yes'}:
+        if not use_existing_anaconda_dir:
             print(
                 'Please change the value of environment variable '
                 'WASP_MAP_ANACONDA_DIR or remove the existing directory at '
-                'that location'
-            )
-            return
-    if os.path.isdir(DIR):
-        use_existing_dir = input(
-            f'There is already a directory at {DIR} - is this the '
-            'WASP you wish to use? ([y]/n) >>>'
-        )
-        if use_existing_dir.casefold() not in {'', 'y', 'yes'}:
-            print(
-                'Please change the value of environment variable WASP_MAP_DIR '
-                'or remove the existing directory at that location'
+                'that location.'
             )
             return
     elif os.path.exists(ANACONDA_DIR):
-        raise RuntimeError(f'There is a non-directory file at {ANACONDA_DIR}')
+        raise RuntimeError(
+            f'There is a non-directory file at {ANACONDA_DIR}. Please change '
+            'the value of environment variable WASP_MAP_ANACONDA_DIR or '
+            'remove the existing file at that location.'
+        )
+    else:
+        use_existing_anaconda_dir = False
+    if os.path.isdir(DIR):
+        use_existing_wasp_dir = (
+            input(
+                f'There is already a directory at {DIR} - is this the '
+                'WASP you wish to use? ([y]/n) >>>'
+            ).casefold() in {'', 'y', 'yes'}
+        )
+        if not use_existing_wasp_dir:
+            print(
+                'Please change the value of environment variable WASP_MAP_DIR '
+                'or remove the existing directory at that location.'
+            )
+            return
+    elif os.path.exists(DIR):
+        raise RuntimeError(
+            f'There is a non-directory file at {DIR} Please change '
+            'the value of environment variable WASP_MAP_DIR or '
+            'remove the existing file at that location.'
+        )
+    else:
+        use_existing_wasp_dir = False
+    
     with TemporaryDirectory(dir=args.tmp_dir) as temp_dir:
         anaconda_install_script_path = os.path.join(
             temp_dir, 'Anaconda3-2019.03-Linux-x86_64.sh'
@@ -127,4 +147,5 @@ def main():
         check_hash(anaconda_install_script_path)
         install_anaconda(anaconda_install_script_path)
     configure_anaconda()
-    clone_wasp()
+    if not use_existing_wasp_dir:
+        clone_wasp()
