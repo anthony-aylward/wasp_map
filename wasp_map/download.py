@@ -6,11 +6,11 @@
 
 import os
 import os.path
+import subprocess
 
 from argparse import ArgumentParser
 from hashlib import sha256
 from shutil import copyfileobj
-from subprocess import run
 from tempfile import TemporaryDirectory
 from urllib.request import urlopen
 
@@ -38,7 +38,7 @@ ANACONDA_HASH = os.environ.get(
 def download_anaconda_install_script(anaconda_install_script_path, quiet=False):
     if not quiet:
         print(
-            'Downloading Anaconda install script to '
+            'Downloading Anaconda3 install script to '
             f'{anaconda_install_script_path}'
         )
     with urlopen(ANACONDA_URL) as (
@@ -53,6 +53,7 @@ def check_hash(anaconda_install_script_path):
     with open(anaconda_install_script_path, 'rb') as f:
         if sha256(f.read()).hexdigest() != ANACONDA_HASH:
             raise RuntimeError(f'hash check failed for {ANACONDA_URL}')
+
 
 def parse_arguments():
     parser = ArgumentParser(description='download and install WASP')
@@ -93,4 +94,11 @@ def main():
             quiet=args.quiet
         )
         check_hash(anaconda_install_script_path)
-        # run('bash', anaconda_install_script_path)
+        with subprocess.Popen(
+            'bash',
+            anaconda_install_script_path,
+            stdin=subprocess.PIPE
+        ) as anaconda_installer:
+            anaconda_installer.communicate(
+                bytes(f'\nqyes\n{ANACONDA_DIR}\n')
+            )
