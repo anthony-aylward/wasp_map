@@ -18,16 +18,11 @@ from wasp_map.env import ANACONDA_DIR
 
 def main():
     command = (
-        'sh', '-c',
-        (
-            'export '
-            'LD_LIBRARY_PATH='
-            f"{os.path.join(ANACONDA_DIR, 'lib')}:$LD_LIBRARY_PATH"
-        )
+        'export '
+        'LD_LIBRARY_PATH='
+        f"{os.path.join(ANACONDA_DIR, 'lib')}:$LD_LIBRARY_PATH"
     )
-    run(command)
     print(
-        f"The following `export` command was run:\n{' '.join(command)}\n"
-        'To avoid repeating this step, append the above command to your '
-        '.bashrc, .profile, or .bash_profile'
+        'Run the following `export` command, or append it to your .bashrc, '
+        f'.profile, or .bash_profile:\n{command}'
     )
