@@ -1,5 +1,5 @@
 # wasp_map
-Utilites for the mapping pipeline from WASP
+Utilites for the mapping pipeline from [WASP](https://github.com/bmvdgeijn/WASP)
 
 ## Installation
 ```sh
