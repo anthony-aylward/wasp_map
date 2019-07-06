@@ -77,7 +77,7 @@ def main():
     if os.path.isdir(ANACONDA_DIR):
         use_existing_dir = input(
             f'There is already a directory at {ANACONDA_DIR} - is this the '
-            'anaconda you wish to use? (Y/n):'
+            'anaconda you wish to use? (Y/n) >>>'
         )
         if use_existing_dir not in {'', 'y', 'Y'}:
             print(
@@ -99,6 +99,7 @@ def main():
         if not args.quiet:
             print(
                 'installing Anaconda3. When prompted, specify the following '
-                f'install location:\n{ANACONDA_DIR}'
+                f'install location:\n{ANACONDA_DIR}\n\npress ENTER to '
+                'continue >>>'
             )
         subprocess.run(('bash', anaconda_install_script_path))
