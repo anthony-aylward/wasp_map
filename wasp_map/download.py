@@ -99,8 +99,7 @@ def main():
         if not args.quiet:
             print(f'installing anaconda3 into {ANACONDA_DIR}')
         with subprocess.Popen(
-            'bash',
-            anaconda_install_script_path,
+            ('bash', anaconda_install_script_path),
             stdin=subprocess.PIPE
         ) as anaconda_installer:
             anaconda_installer.communicate(f'\nqyes\n{ANACONDA_DIR}\n'.encode())
