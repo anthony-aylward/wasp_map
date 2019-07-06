@@ -49,7 +49,7 @@ def main():
     if os.path.isdir(ANACONDA_DIR):
         use_existing_dir = input(
             f'There is already a directory at {ANACONDA_DIR} - is this the '
-            'anaconda you wish to use? (Y/n)'
+            'anaconda you wish to use? (Y/n):'
         )
         if use_existing_dir not in {'', 'y', 'Y'}:
             print(
@@ -74,10 +74,8 @@ def main():
             f
         ):
             copyfileobj(response, f)
-        m = hashlib.sha256()
         with open(anaconda_install_script_path, 'rb') as f:
-            m.update(f.read())
-        print(m.digest().decode())
+            print(hashlib.sha256(f.read()).hexdigest())
         # run('bash', anaconda_install_script_path)
         
 
