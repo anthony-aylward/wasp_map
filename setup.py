@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='wasp_map',
-    version='0.0.18',
+    version='0.0.19',
     author='Anthony Aylward',
     author_email='aaylward@eng.ucsd.edu',
     description='Utilites for the mapping pipeline from WASP',
@@ -23,6 +23,7 @@ setuptools.setup(
         'console_scripts': [
             'wasp_map-set-ldlib=wasp_map.ldlib:main',
             'wasp_map-download=wasp_map.download:main',
+            'wasp_map-map=wasp_map.map:main'
         ]
     }
 )
