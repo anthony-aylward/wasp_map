@@ -25,7 +25,6 @@ from multiprocessing import Pool
 from wasp_map.wasp import RmDup, write_positions_snps
 from wasp_map.wasp import find_intersecting_snps as __find_intersecting_snps
 from wasp_map.wasp import filter_remapped_reads as __filter_remapped_reads
-from wasp_map.wasp import filter_remapped_reads as __filter_remapped_reads
 
 
 
