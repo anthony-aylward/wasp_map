@@ -59,7 +59,13 @@ def setup_directory(output_dir, snp_dir):
             os.mkdir(directory)
 
 
-def map_reads(file_path, trim_qual, processes=1, algorithm=None):
+def map_reads(
+    file_path,
+    trim_qual,
+    processes=1,
+    algorithm=None,
+    reference_genome='/home/joshchiou/references/ucsc.hg19.fasta'
+):
     """Map some reads
     
     Parameters
@@ -88,7 +94,7 @@ def map_reads(file_path, trim_qual, processes=1, algorithm=None):
             trim_qual=trim_qual,
             algorithm=algorithm,
             algorithm_switch_bp=100,
-            reference_genome_path=args.reference_genome
+            reference_genome_path=reference_genome
         )
     ) as sa:
         sa.samtools_sort()
@@ -101,7 +107,8 @@ def preprocess_sample(
     file_path,
     output_dir,
     processes=1,
-    algorithm=None
+    algorithm=None,
+    reference_genome='/home/joshchiou/references/ucsc.hg19.fasta'
 ):
     """Apply preprocessing steps to an input sample
     
@@ -134,12 +141,19 @@ def preprocess_sample(
             file_path,
             trim_qual=15,
             processes=processes,
-            algorithm=algorithm
+            algorithm=algorithm,
+            reference_genome=reference_genome
         )
         alignment.write(map1_path)
 
 
-def preprocessing_step(sample_list, output_dir, processes=1, algorithm=None):
+def preprocessing_step(
+    sample_list,
+    output_dir,
+    processes=1,
+    algorithm=None,
+    reference_genome='/home/joshchiou/references/ucsc.hg19.fasta'
+):
     """Apply preprocessing steps to all input samples
     
     Preprocesses multiple samples in parallel
@@ -161,7 +175,8 @@ def preprocessing_step(sample_list, output_dir, processes=1, algorithm=None):
                 preprocess_sample,
                 output_dir=output_dir,
                 processes=max(1, math.floor(processes / n_samples)),
-                algorithm=algorithm
+                algorithm=algorithm,
+                reference_genome=reference_genome
             ),
             (
                 (sample_name, input_file_path)
@@ -270,7 +285,8 @@ def remap_sample(
     file_path,
     output_dir,
     processes=1,
-    algorithm=None
+    algorithm=None,
+    reference_genome='/home/joshchiou/references/ucsc.hg19.fasta'
 ):
     """Remap an input sample
     
@@ -293,14 +309,21 @@ def remap_sample(
         file_path,
         trim_qual=0,
         processes=processes,
-        algorithm=algorithm
+        algorithm=algorithm,
+        reference_genome=reference_genome
     )
     alignment.write(
         os.path.join(output_dir, 'map2', '{}.sort.bam'.format(sample_name))
     )
 
 
-def remapping_step(sample_list, output_dir, processes=1, algorithm=None):
+def remapping_step(
+    sample_list,
+    output_dir,
+    processes=1,
+    algorithm=None,
+    reference_genome='/home/joshchiou/references/ucsc.hg19.fasta'
+):
     """Remap all input samples
     
     Remaps multiple samples in parallel
@@ -322,7 +345,8 @@ def remapping_step(sample_list, output_dir, processes=1, algorithm=None):
                 remap_sample,
                 output_dir=output_dir,
                 processes=max(1, math.floor(processes / n_samples)),
-                algorithm=algorithm
+                algorithm=algorithm,
+                reference_genome=reference_genome
             ),    
             (
                 (
@@ -756,7 +780,8 @@ def main():
             args.sample,
             args.output_dir,
             processes=args.processes,
-            algorithm=args.algorithm
+            algorithm=args.algorithm,
+            reference_genome=args.reference_genome
         )
     
         # Step 3: find intersecting snps
@@ -773,7 +798,8 @@ def main():
             args.sample,
             args.output_dir,
             processes=args.processes,
-            algorithm=args.algorithm
+            algorithm=args.algorithm,
+            reference_genome=args.reference_genome
         )
     
         # Step 5: filter remapped reads
