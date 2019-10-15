@@ -91,9 +91,9 @@ def map_reads(
             trim_qual=trim_qual,
             algorithm=algorithm,
             algorithm_switch_bp=100,
-            reference_genome_path=reference_genome,
-            temp_dir=temp_dir
-        )
+            reference_genome_path=reference_genome
+        ),
+        temp_dir=temp_dir
     ) as sa:
         sa.samtools_sort()
         sa.samtools_index
@@ -307,7 +307,8 @@ def remap_sample(
         trim_qual=0,
         processes=processes,
         algorithm=algorithm,
-        reference_genome=reference_genome
+        reference_genome=reference_genome,
+        temp_dir=temp_dir
     )
     alignment.write(
         os.path.join(output_dir, 'map2', '{}.sort.bam'.format(sample_name))
