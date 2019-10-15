@@ -717,12 +717,12 @@ def parse_arguments():
         type=float,
         help='Approximate memory limit in gigabytes [5]'
     )
-    args = parser.parse_args()
     resource_group.add_argument(
         '--tmp-dir',
         metavar='<path/to/tmp/>',
         help='directory for temporary files'
     )
+    args = parser.parse_args()
     if not args.snp_dir:
         args.snp_dir = os.path.join(args.output_dir, 'snp_dir')
     return args
