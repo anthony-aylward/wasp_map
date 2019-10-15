@@ -43,11 +43,7 @@ def setup_directory(output_dir, snp_dir):
     """
     
     for directory in (output_dir, snp_dir) + tuple(
-        os.path.join(output_dir, subdir)
-        for
-        subdir
-        in
-        (
+        os.path.join(output_dir, subdir) for subdir in (
             'map1',
             'find_intersecting_snps',
             'map2',
@@ -64,7 +60,8 @@ def map_reads(
     trim_qual,
     processes=1,
     algorithm=None,
-    reference_genome='/home/joshchiou/references/ucsc.hg19.fasta'
+    reference_genome='/home/joshchiou/references/ucsc.hg19.fasta',
+    temp_dir=None
 ):
     """Map some reads
     
@@ -94,7 +91,8 @@ def map_reads(
             trim_qual=trim_qual,
             algorithm=algorithm,
             algorithm_switch_bp=100,
-            reference_genome_path=reference_genome
+            reference_genome_path=reference_genome,
+            temp_dir=temp_dir
         )
     ) as sa:
         sa.samtools_sort()
@@ -108,7 +106,8 @@ def preprocess_sample(
     output_dir,
     processes=1,
     algorithm=None,
-    reference_genome='/home/joshchiou/references/ucsc.hg19.fasta'
+    reference_genome='/home/joshchiou/references/ucsc.hg19.fasta',
+    temp_dir=None
 ):
     """Apply preprocessing steps to an input sample
     
@@ -142,7 +141,8 @@ def preprocess_sample(
             trim_qual=15,
             processes=processes,
             algorithm=algorithm,
-            reference_genome=reference_genome
+            reference_genome=reference_genome,
+            temp_dir=temp_dir
         )
         alignment.write(map1_path)
 
@@ -152,7 +152,8 @@ def preprocessing_step(
     output_dir,
     processes=1,
     algorithm=None,
-    reference_genome='/home/joshchiou/references/ucsc.hg19.fasta'
+    reference_genome='/home/joshchiou/references/ucsc.hg19.fasta',
+    temp_dir=None
 ):
     """Apply preprocessing steps to all input samples
     
@@ -176,14 +177,12 @@ def preprocessing_step(
                 output_dir=output_dir,
                 processes=max(1, math.floor(processes / n_samples)),
                 algorithm=algorithm,
-                reference_genome=reference_genome
+                reference_genome=reference_genome,
+                temp_dir=temp_dir
             ),
             (
                 (sample_name, input_file_path)
-                for
-                sample_name, *input_file_path
-                in
-                sample_list
+                for sample_name, *input_file_path in sample_list
             )
         )
 
@@ -272,10 +271,7 @@ def find_intersecting_snps(
                         '{}.sort.bam'.format(sample_name)
                     )
                 )
-                for
-                sample_name, *input_file_path
-                in
-                sample_list
+                for sample_name, *input_file_path in sample_list
             )
         )
 
@@ -286,7 +282,8 @@ def remap_sample(
     output_dir,
     processes=1,
     algorithm=None,
-    reference_genome='/home/joshchiou/references/ucsc.hg19.fasta'
+    reference_genome='/home/joshchiou/references/ucsc.hg19.fasta',
+    temp_dir=None
 ):
     """Remap an input sample
     
@@ -322,7 +319,8 @@ def remapping_step(
     output_dir,
     processes=1,
     algorithm=None,
-    reference_genome='/home/joshchiou/references/ucsc.hg19.fasta'
+    reference_genome='/home/joshchiou/references/ucsc.hg19.fasta',
+    temp_dir=None
 ):
     """Remap all input samples
     
@@ -346,7 +344,8 @@ def remapping_step(
                 output_dir=output_dir,
                 processes=max(1, math.floor(processes / n_samples)),
                 algorithm=algorithm,
-                reference_genome=reference_genome
+                reference_genome=reference_genome,
+                temp_dir=temp_dir
             ),    
             (
                 (
@@ -361,25 +360,17 @@ def remapping_step(
                                     end
                                 )
                             )
-                            for
-                            end
-                            in
-                            (1, 2)
+                            for end in (1, 2)
                         )
-                        if
-                        len(input_file_path) == 2
-                        else
-                        os.path.join(
+                        if len(input_file_path) == 2
+                        else os.path.join(
                             output_dir,
                             'find_intersecting_snps',
                             '{}.sort.remap.fq.gz'.format(sample_name)
                         )
                     )
                 )
-                for
-                sample_name, *input_file_path
-                in
-                sample_list
+                for sample_name, *input_file_path in sample_list
             )
         )
 
@@ -425,10 +416,7 @@ def filter_remapped_reads(sample_list, output_dir, processes=1, memory_limit=5):
                         '{}.keep.bam'.format(sample_name)
                     )
                 )
-                for
-                sample_name, *input_file_path
-                in
-                sample_list
+                for sample_name, *input_file_path in sample_list
             )
         )
 
@@ -554,10 +542,7 @@ def merge_rmdup_pileup_steps(
             ),
             (
                 (sample_name, input_file_path)
-                for
-                sample_name, *input_file_path
-                in
-                sample_list
+                for sample_name, *input_file_path in sample_list
             )
         )
 
@@ -575,14 +560,8 @@ def remove_intermediate_files(samples, output_dir):
     
     for file_path in (
         file_path
-        for
-        sample_name
-        in
-        (sample[0] for sample in samples)
-        for
-        file_path
-        in
-        (
+        for sample_name in (sample[0] for sample in samples)
+        for file_path in (
             os.path.join(
                 output_dir,
                 'map2',
@@ -617,10 +596,7 @@ def remove_intermediate_files(samples, output_dir):
                     end
                 )
             )
-            for
-            end
-            in
-            (1, 2)
+            for end in (1, 2)
         )
         if
         os.path.isfile(file_path)
@@ -742,6 +718,11 @@ def parse_arguments():
         help='Approximate memory limit in gigabytes [5]'
     )
     args = parser.parse_args()
+    resource_group.add_argument(
+        '--tmp-dir',
+        metavar='<path/to/tmp/>',
+        help='directory for temporary files'
+    )
     if not args.snp_dir:
         args.snp_dir = os.path.join(args.output_dir, 'snp_dir')
     return args
@@ -781,7 +762,8 @@ def main():
             args.output_dir,
             processes=args.processes,
             algorithm=args.algorithm,
-            reference_genome=args.reference_genome
+            reference_genome=args.reference_genome,
+            temp_dir=args.tmp_dir
         )
     
         # Step 3: find intersecting snps
@@ -799,7 +781,8 @@ def main():
             args.output_dir,
             processes=args.processes,
             algorithm=args.algorithm,
-            reference_genome=args.reference_genome
+            reference_genome=args.reference_genome,
+            temp_dir=args.tmp_dir
         )
     
         # Step 5: filter remapped reads
