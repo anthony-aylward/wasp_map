@@ -60,7 +60,7 @@ def check_hash(anaconda_install_script_path):
 
 def install_anaconda(anaconda_install_script_path):
     input(
-        'installing Anaconda3. When prompted, specify the following '
+        'installing Anaconda2. When prompted, specify the following '
         f'install location:\n{ANACONDA_DIR}\npress ENTER to '
         'continue >>>'
     )
