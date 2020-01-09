@@ -192,7 +192,7 @@ def any_heterozygous(genotypes):
     )
 
 
-def is_genotyped_or_well_imputed(filter, info, r2=0):
+def is_genotyped_or_well_imputed(info, r2=0):
     """Determine if the current variant was genotyped or was well-imputed
     
     Parameters
@@ -211,16 +211,11 @@ def is_genotyped_or_well_imputed(filter, info, r2=0):
         (i.e. imputation quality exceeds threshold) False otherwise.
     """
     
-    return bool(
-        ({'GENOTYPED', 'GENOTYPED_ONLY'} & set(filter.split(';')))
-        or (
-            float(
-                dict(tuple(pair.split('=')) for pair in info.split(';')).get(
-                    'R2', 0
-                )
-            )
-            > r2
-        )
+    info_list = info.split(';')
+
+    return (
+        (info_list[-1] == 'TYPED')
+        or (float(info_list[2].split('=')[1]) > r2)
     )
 
 
@@ -262,12 +257,12 @@ def generate_filtered_vcf(
             continue
         
         (
-            chrom, pos, id, ref, alt, qual, filter, info, format, *genotypes
+            chrom, pos, id, ref, alt, qual, _, info, format, *genotypes
         ) = line.split()
         genotypes = tuple(genotypes[i] for i in sample_indices)
         if het_only and not any_heterozygous(genotypes):
             continue
-        if r2 > 0 and (not is_genotyped_or_well_imputed(filter, info, r2)):
+        if r2 > 0 and (not is_genotyped_or_well_imputed(info, r2)):
             continue
         
         yield '\t'.join(

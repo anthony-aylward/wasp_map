@@ -812,28 +812,6 @@ def main():
         remove_empty_directories(args.output_dir)
 
 
-def main_skip_to_6(args):
-    # Stop here if no sample was given
-    if args.sample:
-    
-        # Step 6-7+: Merge remapped_reads, remove duplicates, generate pileups
-        merge_rmdup_pileup_steps(
-            args.sample,
-            args.output_dir,
-            args.snp_dir,
-            args.reference_genome,
-            processes=args.processes
-        )
-    
-        # Clean up intermediate files
-        if not args.save_intermediate:
-            remove_intermediate_files(args.sample, args.output_dir)
-        
-    # Clean up empty directories
-    if not args.save_intermediate:
-        remove_empty_directories(args.output_dir)
-
-
 
 
 # Execute ======================================================================
