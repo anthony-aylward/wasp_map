@@ -422,7 +422,12 @@ def filter_remapped_reads(sample_list, output_dir, processes=1, memory_limit=5):
         )
 
 
-def merge_and_rmdup(*sequence_alignments, paired_end=False, processes=1):
+def merge_and_rmdup(
+    *sequence_alignments,
+    paired_end=False,
+    processes=1,
+    temp_dir=None
+):
     """Merge kept and remapped reads and apply WASP's dedupper
     
     Parameters
@@ -438,7 +443,8 @@ def merge_and_rmdup(*sequence_alignments, paired_end=False, processes=1):
     sa = seqalign.merge(
         *sequence_alignments,
         processes=processes,
-        dedupper=RmDup(paired_end=paired_end, processes=processes)
+        dedupper=RmDup(paired_end=paired_end, processes=processes),
+        temp_dir=temp_dir
     )
     sa.samtools_sort()
     sa.samtools_index()
@@ -455,7 +461,8 @@ def merge_rmdup_pileup(
     output_dir,
     snp_dir,
     reference_genome_path,
-    processes=1
+    processes=1,
+    temp_dir=None
 ):
     """Merge kept and remapped reads, remove duplicates, and generate a pileup
     
@@ -489,7 +496,8 @@ def merge_rmdup_pileup(
             '{}.sort.keep.bam'.format(sample_name)
         ),
         paired_end=len(input_file_path) == 2,
-        processes=processes
+        processes=processes,
+        temp_dir=temp_dir
     )
     with open(
         os.path.join(
@@ -513,7 +521,8 @@ def merge_rmdup_pileup_steps(
     output_dir,
     snp_dir,
     reference_genome_path,
-    processes=1
+    processes=1,
+    temp_dir=None
 ):
     """Merge reads, remove duplicates, and generate a pileup for all samples
     
@@ -539,7 +548,8 @@ def merge_rmdup_pileup_steps(
                 output_dir=output_dir,
                 snp_dir=snp_dir,
                 reference_genome_path=reference_genome_path,
-                processes=max(1, math.floor(processes / n_samples))
+                processes=max(1, math.floor(processes / n_samples)),
+                temp_dir=temp_dir
             ),
             (
                 (sample_name, input_file_path)
@@ -800,7 +810,8 @@ def main():
             args.output_dir,
             args.snp_dir,
             args.reference_genome,
-            processes=args.processes
+            processes=args.processes,
+            temp_dir=args.tmp_dir
         )
     
         # Clean up intermediate files
