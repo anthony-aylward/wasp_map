@@ -197,8 +197,6 @@ def is_genotyped_or_well_imputed(info, r2=0):
     
     Parameters
     ----------
-    filter : str
-        Data from the FILTER column of an imputed VCF file
     info : str
         Data from the INFO column of an imputed VCF file
     r2 : float
@@ -257,7 +255,7 @@ def generate_filtered_vcf(
             continue
         
         (
-            chrom, pos, id, ref, alt, qual, _, info, format, *genotypes
+            chrom, pos, id, ref, alt, qual, filt, info, format, *genotypes
         ) = line.split()
         genotypes = tuple(genotypes[i] for i in sample_indices)
         if het_only and not any_heterozygous(genotypes):
@@ -266,7 +264,7 @@ def generate_filtered_vcf(
             continue
         
         yield '\t'.join(
-            (chrom, pos, id, ref, alt, qual, filter, info, format, *genotypes)
+            (chrom, pos, id, ref, alt, qual, filt, info, format, *genotypes)
         )
 
 
