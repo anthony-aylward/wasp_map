@@ -722,9 +722,9 @@ def parse_arguments():
     resource_group.add_argument(
         '--processes',
         metavar='<int>',
-        default=1,
+        default=2,
         type=int,
-        help='Maximum number of processes allowed [1]'
+        help='Maximum number of processes allowed. Must be >= 2. [2]'
     )
     resource_group.add_argument(
         '--memory-limit',
@@ -739,6 +739,8 @@ def parse_arguments():
         help='directory for temporary files'
     )
     args = parser.parse_args()
+    if args.processes < 2:
+        raise RuntimeError('allow at least 2 processes')
     if not args.snp_dir:
         args.snp_dir = os.path.join(args.output_dir, 'snp_dir')
     return args
