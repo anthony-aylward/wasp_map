@@ -713,6 +713,11 @@ def parse_arguments():
         choices={'aln', 'mem'},
         help='Force BWA algorithm'
     )
+    config_group.add_argument(
+        '--skip-to-4',
+        action='store_true',
+        help='skip to step 4 (remapping)'
+    )
     resource_group = parser.add_argument_group('resource arguments')
     resource_group.add_argument(
         '--processes',
@@ -766,25 +771,27 @@ def main():
     
     # Stop here if no sample was given
     if args.sample:
-    
-        # Step 2: preprocess sequencing data
-        preprocessing_step(
-            args.sample,
-            args.output_dir,
-            processes=args.processes,
-            algorithm=args.algorithm,
-            reference_genome=args.reference_genome,
-            temp_dir=args.tmp_dir
-        )
-    
-        # Step 3: find intersecting snps
-        find_intersecting_snps(
-            args.sample,
-            args.output_dir,
-            args.snp_dir,
-            processes=args.processes,
-            memory_limit=args.memory_limit
-        )
+        
+        if not args.skip_to_4:
+
+            # Step 2: preprocess sequencing data
+            preprocessing_step(
+                args.sample,
+                args.output_dir,
+                processes=args.processes,
+                algorithm=args.algorithm,
+                reference_genome=args.reference_genome,
+                temp_dir=args.tmp_dir
+            )
+        
+            # Step 3: find intersecting snps
+            find_intersecting_snps(
+                args.sample,
+                args.output_dir,
+                args.snp_dir,
+                processes=args.processes,
+                memory_limit=args.memory_limit
+            )
     
         # Step 4: remap
         remapping_step(
