@@ -18,6 +18,7 @@ import functools
 import math
 import os
 import os.path
+import pyhg19
 import seqalign
 
 from multiprocessing import Pool
@@ -60,7 +61,7 @@ def map_reads(
     trim_qual,
     processes=1,
     algorithm=None,
-    reference_genome='/home/joshchiou/references/ucsc.hg19.fasta',
+    reference_genome=pyhg19.PATH,
     temp_dir=None
 ):
     """Map some reads
@@ -106,7 +107,7 @@ def preprocess_sample(
     output_dir,
     processes=1,
     algorithm=None,
-    reference_genome='/home/joshchiou/references/ucsc.hg19.fasta',
+    reference_genome=pyhg19.PATH,
     temp_dir=None
 ):
     """Apply preprocessing steps to an input sample
@@ -152,7 +153,7 @@ def preprocessing_step(
     output_dir,
     processes=1,
     algorithm=None,
-    reference_genome='/home/joshchiou/references/ucsc.hg19.fasta',
+    reference_genome=pyhg19.PATH,
     temp_dir=None
 ):
     """Apply preprocessing steps to all input samples
@@ -282,7 +283,7 @@ def remap_sample(
     output_dir,
     processes=1,
     algorithm=None,
-    reference_genome='/home/joshchiou/references/ucsc.hg19.fasta',
+    reference_genome=pyhg19.PATH,
     temp_dir=None
 ):
     """Remap an input sample
@@ -320,7 +321,7 @@ def remapping_step(
     output_dir,
     processes=1,
     algorithm=None,
-    reference_genome='/home/joshchiou/references/ucsc.hg19.fasta',
+    reference_genome=pyhg19.PATH,
     temp_dir=None
 ):
     """Remap all input samples
@@ -691,10 +692,9 @@ def parse_arguments():
     config_group.add_argument(
         '--reference-genome',
         metavar='<path/to/reference_genome.fa>',
-        default='/home/joshchiou/references/ucsc.hg19.fasta',
+        default=pyhg19.PATH,
         help=(
-            'Path to reference genome '
-            '[/home/joshchiou/references/ucsc.hg19.fasta]'
+            f'Path to reference genome [{pyhg19.PATH}]'
         )
     )
     config_group.add_argument(
